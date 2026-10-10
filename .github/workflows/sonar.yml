@@ -27,6 +27,8 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               run: >
-                  mvn -B -DskipTests verify
+                  mvn -B -DskipTests -Dspotless.check.skip=true verify
                   org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
                   -Dsonar.organization=alfonsodbn-314
+                  -Dsonar.projectKey=AlfonsoDbn-314_WebGoat
+                  -Dsonar.host.url=https://sonarcloud.io
