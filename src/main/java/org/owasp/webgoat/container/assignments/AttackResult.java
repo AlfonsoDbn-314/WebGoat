@@ -4,13 +4,21 @@
  */
 package org.owasp.webgoat.container.assignments;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeJson;
-
+import java.util.Map;
 import lombok.Getter;
+import org.apache.commons.text.translate.AggregateTranslator;
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.EntityArrays;
+import org.apache.commons.text.translate.LookupTranslator;
 import org.owasp.webgoat.container.i18n.PluginMessages;
 
 @Getter
 public class AttackResult {
+
+  private static final CharSequenceTranslator ESCAPE_KEEPING_ACCENTS =
+      new AggregateTranslator(
+          new LookupTranslator(Map.of("\"", "\\\"", "\\", "\\\\", "/", "\\/")),
+          new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE));
 
   private final boolean lessonCompleted;
   private final String feedback;
@@ -27,8 +35,8 @@ public class AttackResult {
       String assignment,
       boolean attemptWasMade) {
     this.lessonCompleted = lessonCompleted;
-    this.feedback = escapeJson(feedback);
-    this.output = escapeJson(output);
+    this.feedback = ESCAPE_KEEPING_ACCENTS.translate(feedback);
+    this.output = ESCAPE_KEEPING_ACCENTS.translate(output);
     this.assignment = assignment;
     this.attemptWasMade = attemptWasMade;
   }
